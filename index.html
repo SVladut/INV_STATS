@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#090b13" />
+  <title>Inventare</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-bg" aria-hidden="true">
+    <span class="orb orb-one"></span>
+    <span class="orb orb-two"></span>
+    <span class="grid-glow"></span>
+  </div>
+
+  <section id="loginScreen" class="login-screen">
+    <div class="login-card glass">
+      <div class="brand-pill">Inventare private</div>
+      <h1>Intră în contul tău</h1>
+      <p class="login-copy">
+        Datele sunt separate pe utilizator. După logare vezi doar inventarele contului curent.
+      </p>
+
+      <div class="auth-tabs" role="tablist" aria-label="Autentificare">
+        <button id="showLoginBtn" class="auth-tab active" type="button">Login</button>
+        <button id="showRegisterBtn" class="auth-tab" type="button">Cont nou</button>
+      </div>
+
+      <form id="loginForm" class="auth-form" autocomplete="on">
+        <label>
+          Username
+          <input id="loginUsername" type="text" placeholder="ex: vladut" autocomplete="username" required />
+        </label>
+        <label>
+          Parolă
+          <input id="loginPassword" type="password" placeholder="parola ta" autocomplete="current-password" required />
+        </label>
+        <button class="btn btn-primary wide" type="submit">Intră în aplicație</button>
+      </form>
+
+      <form id="registerForm" class="auth-form hidden" autocomplete="on">
+        <label>
+          Username
+          <input id="registerUsername" type="text" placeholder="ex: reci" autocomplete="username" required />
+        </label>
+        <label>
+          Parolă
+          <input id="registerPassword" type="password" placeholder="minimum 4 caractere" autocomplete="new-password" required />
+        </label>
+        <button class="btn btn-primary wide" type="submit">Creează cont local</button>
+      </form>
+
+      <p id="authMessage" class="form-message" role="alert"></p>
+
+      <div class="login-note">
+        <strong>Important:</strong> username-ul și parola sunt salvate local în browser. Pentru autopush în GitHub, setezi URL-ul Worker-ului în <code>script.js</code>.
+      </div>
+    </div>
+  </section>
+
+  <div id="appShell" class="app-shell hidden">
+    <aside class="sidebar glass">
+      <div class="logo-block">
+        <div class="logo-mark">I</div>
+        <div>
+          <strong>Inventare</strong>
+          <span id="storageModeLabel">local</span>
+        </div>
+      </div>
+
+      <nav class="desktop-nav" aria-label="Meniu principal">
+        <button class="nav-item active" type="button" data-view="dashboardView">Acasă</button>
+        <button class="nav-item" type="button" data-view="calendarView">Calendar</button>
+        <button class="nav-item" type="button" data-view="statsView">Statistici</button>
+        <button class="nav-item" type="button" data-view="historyView">Istoric</button>
+        <button class="nav-item" type="button" data-view="settingsView">Setări</button>
+      </nav>
+
+      <div class="user-box">
+        <span>Conectat ca</span>
+        <strong id="currentUserLabel">-</strong>
+        <button id="logoutBtn" class="btn btn-ghost" type="button">Logout</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar glass">
+        <div>
+          <span class="page-kicker" id="pageKicker">Dashboard</span>
+          <h1 id="pageTitle">Banii și inventarele tale</h1>
+        </div>
+        <button id="openAddBtn" class="btn btn-primary" type="button">+ Inventar</button>
+      </header>
+
+      <section id="dashboardView" class="view active-view">
+        <div class="money-hero glass">
+          <div>
+            <span class="muted-label">Bani rămași de luat</span>
+            <strong id="moneyDueHero">0 lei</strong>
+            <p id="moneyHeroSubtitle">Nu ai inventare restante.</p>
+          </div>
+          <div class="hero-ring">
+            <span id="paidPercent">0%</span>
+            <small>achitat</small>
+          </div>
+        </div>
+
+        <div class="quick-stats">
+          <article class="metric-card glass success-card">
+            <span>Bani luați</span>
+            <strong id="moneyTaken">0 lei</strong>
+            <small>inventare trecute achitate</small>
+          </article>
+          <article class="metric-card glass danger-card">
+            <span>Bani de luat</span>
+            <strong id="moneyDue">0 lei</strong>
+            <small>inventare trecute neachitate</small>
+          </article>
+          <article class="metric-card glass blue-card">
+            <span>Programate</span>
+            <strong id="moneyPlanned">0 lei</strong>
+            <small>inventare viitoare estimate</small>
+          </article>
+          <article class="metric-card glass purple-card">
+            <span>Media lunii</span>
+            <strong id="monthHourlyAverage">0 lei/h</strong>
+            <small>calculată din orele completate</small>
+          </article>
+        </div>
+
+        <div class="two-column">
+          <section class="panel glass">
+            <div class="section-head">
+              <div>
+                <span class="page-kicker">Următoarele zile</span>
+                <h2>Inventare viitoare</h2>
+              </div>
+              <button class="text-link" data-view-shortcut="calendarView" type="button">Calendar</button>
+            </div>
+            <div id="upcomingList" class="mini-list"></div>
+          </section>
+
+          <section class="panel glass">
+            <div class="section-head">
+              <div>
+                <span class="page-kicker">Restanțe</span>
+                <h2>De încasat</h2>
+              </div>
+              <button class="text-link" data-view-shortcut="historyView" type="button">Istoric</button>
+            </div>
+            <div id="dueList" class="mini-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="calendarView" class="view">
+        <section class="panel glass calendar-panel">
+          <div class="section-head calendar-head">
+            <button id="prevMonthBtn" class="icon-btn" type="button" aria-label="Luna anterioară">‹</button>
+            <div>
+              <span class="page-kicker">Calendar</span>
+              <h2 id="calendarTitle">Luna curentă</h2>
+            </div>
+            <button id="nextMonthBtn" class="icon-btn" type="button" aria-label="Luna următoare">›</button>
+          </div>
+
+          <div class="calendar-weekdays" aria-hidden="true">
+            <span>L</span><span>Ma</span><span>Mi</span><span>J</span><span>V</span><span>S</span><span>D</span>
+          </div>
+          <div id="calendarGrid" class="calendar-grid"></div>
+        </section>
+
+        <section class="panel glass">
+          <div class="section-head">
+            <div>
+              <span class="page-kicker">Zi selectată</span>
+              <h2 id="selectedDateTitle">Alege o zi</h2>
+            </div>
+          </div>
+          <div id="selectedDayList" class="inventory-list compact-list"></div>
+        </section>
+      </section>
+
+      <section id="statsView" class="view">
+        <div class="stats-grid-large">
+          <section class="panel glass">
+            <div class="section-head">
+              <div>
+                <span class="page-kicker">Grafic</span>
+                <h2>Bani luați / lună</h2>
+              </div>
+            </div>
+            <div id="paidMoneyChart" class="bar-chart"></div>
+          </section>
+
+          <section class="panel glass">
+            <div class="section-head">
+              <div>
+                <span class="page-kicker">Grafic</span>
+                <h2>Bani de luat / lună</h2>
+              </div>
+            </div>
+            <div id="dueMoneyChart" class="bar-chart"></div>
+          </section>
+
+          <section class="panel glass">
+            <div class="section-head">
+              <div>
+                <span class="page-kicker">Grafic</span>
+                <h2>Zile lucrate / lună</h2>
+              </div>
+            </div>
+            <div id="workedDaysChart" class="bar-chart"></div>
+          </section>
+
+          <section class="panel glass">
+            <div class="section-head">
+              <div>
+                <span class="page-kicker">Grafic</span>
+                <h2>Medie lei/oră / lună</h2>
+              </div>
+            </div>
+            <div id="hourlyChart" class="bar-chart"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="historyView" class="view">
+        <section class="panel glass sticky-filters">
+          <div class="filters-row">
+            <label>
+              Caută
+              <input id="searchInput" type="search" placeholder="denumire, dată, observații..." />
+            </label>
+            <label>
+              Status
+              <select id="statusFilter">
+                <option value="toate">Toate</option>
+                <option value="achitate">Achitate</option>
+                <option value="neachitate">Neachitate</option>
+                <option value="viitoare">Viitoare</option>
+              </select>
+            </label>
+            <label>
+              Tip
+              <select id="typeFilter">
+                <option value="toate">Toate</option>
+                <option value="sofer-da">Șofer: da</option>
+                <option value="sofer-nu">Șofer: nu</option>
+                <option value="deplasare-da">Deplasare: da</option>
+                <option value="deplasare-nu">Deplasare: nu</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel glass">
+          <div class="section-head">
+            <div>
+              <span class="page-kicker">Toate datele</span>
+              <h2>Istoric inventare</h2>
+            </div>
+          </div>
+          <div id="historyList" class="inventory-list"></div>
+        </section>
+      </section>
+
+      <section id="settingsView" class="view">
+        <section class="panel glass settings-panel">
+          <div class="section-head">
+            <div>
+              <span class="page-kicker">Backup</span>
+              <h2>Export / Import JSON</h2>
+            </div>
+          </div>
+          <p class="soft-text">
+            Exportul îți descarcă toate datele grupate pe utilizatori. Importul înlocuiește datele aplicației cu fișierul ales.
+          </p>
+          <div class="settings-actions">
+            <button id="exportBtn" class="btn btn-secondary" type="button">Exportă JSON</button>
+            <label class="file-btn">
+              Importă JSON
+              <input id="importInput" type="file" accept="application/json,.json" />
+            </label>
+            <button id="syncBtn" class="btn btn-primary" type="button">Sincronizează</button>
+          </div>
+          <div class="config-box">
+            <strong>Autopush GitHub</strong>
+            <p>
+              Dacă setezi <code>AUTOPUSH_URL</code> în <code>script.js</code>, salvările se trimit către Worker, iar Worker-ul modifică <code>data/inventare.json</code> în repository.
+            </p>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <nav class="mobile-nav glass" aria-label="Meniu mobil">
+    <button class="mobile-nav-item active" type="button" data-view="dashboardView">Acasă</button>
+    <button class="mobile-nav-item" type="button" data-view="calendarView">Calendar</button>
+    <button class="mobile-nav-item" type="button" data-view="statsView">Stats</button>
+    <button class="mobile-nav-item" type="button" data-view="historyView">Istoric</button>
+  </nav>
+
+  <div id="inventoryDrawer" class="drawer-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <section class="drawer glass">
+      <div class="drawer-head">
+        <div>
+          <span class="page-kicker">Inventar</span>
+          <h2 id="drawerTitle">Adaugă inventar</h2>
+        </div>
+        <button id="closeDrawerBtn" class="icon-btn" type="button" aria-label="Închide">×</button>
+      </div>
+
+      <form id="inventoryForm" class="inventory-form" novalidate>
+        <input id="inventoryId" type="hidden" />
+
+        <label>
+          Data
+          <input id="dateInput" type="date" required />
+        </label>
+
+        <label>
+          Denumire
+          <input id="nameInput" type="text" placeholder="ex: Inventar Kaufland" required />
+        </label>
+
+        <div class="form-pair">
+          <label>
+            Suma
+            <input id="amountInput" type="number" min="0.01" step="0.01" placeholder="250" required />
+          </label>
+          <label>
+            Ore plecat de acasă
+            <input id="hoursInput" type="number" min="0" step="0.25" placeholder="6.5" />
+          </label>
+        </div>
+
+        <div class="toggle-grid">
+          <label class="switch-card">
+            <input id="driverInput" type="checkbox" />
+            <span>Șofer</span>
+          </label>
+          <label class="switch-card">
+            <input id="travelInput" type="checkbox" />
+            <span>Deplasare</span>
+          </label>
+          <label class="switch-card">
+            <input id="paidInput" type="checkbox" />
+            <span>Achitat</span>
+          </label>
+        </div>
+
+        <label>
+          Observații
+          <textarea id="notesInput" rows="3" placeholder="detalii utile..."></textarea>
+        </label>
+
+        <p id="inventoryFormMessage" class="form-message"></p>
+
+        <div class="drawer-actions">
+          <button id="deleteFromFormBtn" class="btn btn-danger hidden" type="button">Șterge</button>
+          <button class="btn btn-primary" type="submit">Salvează</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
