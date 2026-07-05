@@ -79,13 +79,24 @@ const els = {
   dueMoneyChart: document.getElementById('dueMoneyChart'),
   workedDaysChart: document.getElementById('workedDaysChart'),
   hourlyChart: document.getElementById('hourlyChart'),
+  openFiltersBtn: document.getElementById('openFiltersBtn'),
+  closeFiltersBtn: document.getElementById('closeFiltersBtn'),
+  filtersDrawer: document.getElementById('filtersDrawer'),
+  filtersForm: document.getElementById('filtersForm'),
+  resetFiltersBtn: document.getElementById('resetFiltersBtn'),
+  filterSummary: document.getElementById('filterSummary'),
+  filterCountBadge: document.getElementById('filterCountBadge'),
   searchInput: document.getElementById('searchInput'),
   statusFilter: document.getElementById('statusFilter'),
   typeFilter: document.getElementById('typeFilter'),
   historyList: document.getElementById('historyList'),
-  exportBtn: document.getElementById('exportBtn'),
-  importInput: document.getElementById('importInput'),
-  syncBtn: document.getElementById('syncBtn'),
+  profileCurrentUser: document.getElementById('profileCurrentUser'),
+  profileForm: document.getElementById('profileForm'),
+  profileUsername: document.getElementById('profileUsername'),
+  profileCurrentPassword: document.getElementById('profileCurrentPassword'),
+  profileNewPassword: document.getElementById('profileNewPassword'),
+  profileMessage: document.getElementById('profileMessage'),
+  profileLogoutBtn: document.getElementById('profileLogoutBtn'),
   toast: document.getElementById('toast')
 };
 
@@ -94,7 +105,7 @@ const viewTitles = {
   calendarView: ['Calendar', 'Zilele cu inventare'],
   statsView: ['Statistici', 'Grafice și medii'],
   historyView: ['Istoric', 'Toate inventarele'],
-  settingsView: ['Setări', 'Backup și sincronizare']
+  profileView: ['Profil', 'Contul tău']
 };
 
 function normalizeUsername(username) {
@@ -140,6 +151,12 @@ function formatMoneyDetailed(value) {
   return new Intl.NumberFormat('ro-RO', {
     style: 'currency',
     currency: 'RON',
+    maximumFractionDigits: 2
+  }).format(Number(value || 0));
+}
+
+function formatNumber(value) {
+  return new Intl.NumberFormat('ro-RO', {
     maximumFractionDigits: 2
   }).format(Number(value || 0));
 }
@@ -439,6 +456,7 @@ function enterApp() {
 }
 
 function setView(viewId) {
+  if (!document.getElementById(viewId)) viewId = 'dashboardView';
   currentView = viewId;
   document.querySelectorAll('.view').forEach((view) => view.classList.toggle('active-view', view.id === viewId));
   els.navItems.forEach((item) => item.classList.toggle('active', item.dataset.view === viewId));
@@ -478,6 +496,22 @@ function openDrawer(inventory = null) {
 
 function closeDrawer() {
   els.drawer.classList.add('hidden');
+}
+
+function openFilters() {
+  els.filtersDrawer.classList.remove('hidden');
+  window.setTimeout(() => els.searchInput.focus(), 70);
+}
+
+function closeFilters() {
+  els.filtersDrawer.classList.add('hidden');
+}
+
+function resetFilters() {
+  els.searchInput.value = '';
+  els.statusFilter.value = 'toate';
+  els.typeFilter.value = 'toate';
+  renderHistory();
 }
 
 function validateInventoryForm(data) {
@@ -748,10 +782,12 @@ function renderStats() {
     suffix: 'lei'
   }));
 
-  const workedDaysData = keys.map((key) => ({
+  const workedHoursData = keys.map((key) => ({
     label: monthLabel(key),
-    value: new Set(past.filter((item) => item.data.startsWith(key)).map((item) => item.data)).size,
-    suffix: 'zile'
+    value: past
+      .filter((item) => item.data.startsWith(key))
+      .reduce((sum, item) => sum + Number(item.orePlecatAcasa || 0), 0),
+    suffix: 'ore'
   }));
 
   const hourlyData = keys.map((key) => {
@@ -765,25 +801,42 @@ function renderStats() {
     };
   });
 
-  renderBarChart(els.paidMoneyChart, paidData, true);
+  renderBarChart(els.paidMoneyChart, paidData, true, 6000);
   renderBarChart(els.dueMoneyChart, dueData, true);
-  renderBarChart(els.workedDaysChart, workedDaysData, false);
-  renderBarChart(els.hourlyChart, hourlyData, true);
+  renderBarChart(els.workedDaysChart, workedHoursData, false, 160);
+  renderBarChart(els.hourlyChart, hourlyData, true, 37.5);
 }
 
-function renderBarChart(container, data, isMoney) {
-  const max = Math.max(...data.map((item) => item.value), 1);
+function renderBarChart(container, data, isMoney, target = null) {
+  const max = target || Math.max(...data.map((item) => item.value), 1);
   container.innerHTML = data.map((item) => {
-    const width = Math.max((item.value / max) * 100, item.value ? 4 : 0);
-    const value = isMoney ? formatMoney(item.value) : `${item.value} ${item.suffix}`;
+    const rawWidth = (item.value / max) * 100;
+    const width = Math.min(Math.max(rawWidth, item.value ? 4 : 0), 100);
+    const percent = Math.max(rawWidth, 0);
+    const value = formatChartValue(item, isMoney);
     return `
       <div class="chart-row">
         <span class="chart-label">${escapeHtml(item.label)}</span>
-        <span class="chart-track"><span class="chart-fill" style="width: ${width}%"></span></span>
+        <span class="chart-track">
+          <span class="chart-fill" style="width: ${width}%"></span>
+          <span class="chart-percent">${formatPercent(percent)}</span>
+        </span>
         <span class="chart-value">${value}</span>
       </div>
     `;
   }).join('');
+}
+
+function formatChartValue(item, isMoney) {
+  if (item.suffix === 'lei/h') return `${formatNumber(item.value)} lei/h`;
+  if (isMoney) return formatMoney(item.value);
+  return `${formatNumber(item.value)} ${item.suffix}`;
+}
+
+function formatPercent(value) {
+  return `${new Intl.NumberFormat('ro-RO', {
+    maximumFractionDigits: value >= 10 ? 0 : 1
+  }).format(Number(value || 0))}%`;
 }
 
 function getFilteredHistory() {
@@ -812,11 +865,124 @@ function getFilteredHistory() {
   });
 }
 
+function updateFilterSummary() {
+  const parts = [];
+  let activeCount = 0;
+  const query = els.searchInput.value.trim();
+
+  if (query) {
+    activeCount += 1;
+    parts.push(`Căutare: ${query}`);
+  }
+
+  if (els.statusFilter.value !== 'toate') {
+    activeCount += 1;
+    parts.push(els.statusFilter.options[els.statusFilter.selectedIndex].text);
+  }
+
+  if (els.typeFilter.value !== 'toate') {
+    activeCount += 1;
+    parts.push(els.typeFilter.options[els.typeFilter.selectedIndex].text);
+  }
+
+  els.filterSummary.textContent = parts.length ? parts.join(' · ') : 'Toate inventarele';
+  els.filterCountBadge.textContent = activeCount;
+  els.filterCountBadge.classList.toggle('hidden', activeCount === 0);
+}
+
 function renderHistory() {
   const items = getFilteredHistory();
+  updateFilterSummary();
   els.historyList.innerHTML = items.length
     ? items.map(renderInventoryCard).join('')
     : emptyCard('Nu există inventare pentru filtrele selectate.');
+}
+
+function renderProfile() {
+  els.profileCurrentUser.textContent = currentUser || '-';
+  if (document.activeElement !== els.profileUsername) {
+    els.profileUsername.value = currentUser || '';
+  }
+}
+
+function showProfileMessage(message, type = 'error') {
+  els.profileMessage.textContent = message;
+  els.profileMessage.style.color = type === 'error' ? '#fb7185' : '#34d399';
+}
+
+async function updateProfile(event) {
+  event.preventDefault();
+
+  const newUsername = normalizeUsername(els.profileUsername.value);
+  const currentPassword = els.profileCurrentPassword.value;
+  const newPassword = els.profileNewPassword.value;
+  const authUsers = getAuthUsers();
+  const user = authUsers[currentUser];
+
+  if (!user) {
+    showProfileMessage('Sesiunea curentă nu mai este validă. Autentifică-te din nou.');
+    return;
+  }
+
+  if (!newUsername || newUsername.length < 2) {
+    showProfileMessage('Username-ul trebuie să aibă minimum 2 caractere.');
+    return;
+  }
+
+  if (newUsername !== currentUser && authUsers[newUsername]) {
+    showProfileMessage('Există deja un cont local cu acest username.');
+    return;
+  }
+
+  if (newUsername !== currentUser && database.users?.[newUsername]) {
+    showProfileMessage('Există deja date locale pentru acest username. Alege alt username.');
+    return;
+  }
+
+  if (newPassword && newPassword.length < 4) {
+    showProfileMessage('Parola nouă trebuie să aibă minimum 4 caractere.');
+    return;
+  }
+
+  const currentHash = await sha256(`${user.salt}:${currentPassword}`);
+  if (currentHash !== user.passwordHash) {
+    showProfileMessage('Parola actuală nu este corectă.');
+    return;
+  }
+
+  const oldUsername = currentUser;
+  const updatedUser = {
+    ...user,
+    username: newUsername,
+    updatedAt: new Date().toISOString()
+  };
+
+  if (newPassword) {
+    updatedUser.salt = randomId();
+    updatedUser.passwordHash = await sha256(`${updatedUser.salt}:${newPassword}`);
+  }
+
+  delete authUsers[oldUsername];
+  authUsers[newUsername] = updatedUser;
+  saveAuthUsers(authUsers);
+
+  if (newUsername !== oldUsername) {
+    ensureUser(oldUsername);
+    database.users[newUsername] = {
+      ...database.users[oldUsername],
+      username: newUsername
+    };
+    delete database.users[oldUsername];
+    currentUser = newUsername;
+    localStorage.setItem(CONFIG.SESSION_KEY, currentUser);
+  }
+
+  els.currentUserLabel.textContent = currentUser;
+  els.profileCurrentPassword.value = '';
+  els.profileNewPassword.value = '';
+  await saveDatabase('Profil actualizat.');
+  renderProfile();
+  showProfileMessage('Profil actualizat.', 'success');
 }
 
 function renderAll() {
@@ -824,6 +990,7 @@ function renderAll() {
   renderCalendar();
   renderStats();
   renderHistory();
+  renderProfile();
 }
 
 function editById(id) {
@@ -865,6 +1032,8 @@ function attachEvents() {
   els.loginForm.addEventListener('submit', login);
   els.registerForm.addEventListener('submit', register);
   els.logoutBtn.addEventListener('click', logout);
+  els.profileLogoutBtn.addEventListener('click', logout);
+  els.profileForm.addEventListener('submit', updateProfile);
 
   els.navItems.forEach((item) => item.addEventListener('click', () => setView(item.dataset.view)));
   els.shortcutButtons.forEach((item) => item.addEventListener('click', () => setView(item.dataset.viewShortcut)));
@@ -874,6 +1043,17 @@ function attachEvents() {
   els.drawer.addEventListener('click', (event) => {
     if (event.target === els.drawer) closeDrawer();
   });
+  els.openFiltersBtn.addEventListener('click', openFilters);
+  els.closeFiltersBtn.addEventListener('click', closeFilters);
+  els.filtersDrawer.addEventListener('click', (event) => {
+    if (event.target === els.filtersDrawer) closeFilters();
+  });
+  els.filtersForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    renderHistory();
+    closeFilters();
+  });
+  els.resetFiltersBtn.addEventListener('click', resetFilters);
 
   els.inventoryForm.addEventListener('submit', saveInventory);
   els.deleteFromFormBtn.addEventListener('click', () => {
@@ -893,9 +1073,11 @@ function attachEvents() {
   els.searchInput.addEventListener('input', renderHistory);
   els.statusFilter.addEventListener('change', renderHistory);
   els.typeFilter.addEventListener('change', renderHistory);
-  els.exportBtn.addEventListener('click', exportJson);
-  els.importInput.addEventListener('change', importJson);
-  els.syncBtn.addEventListener('click', syncNow);
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    closeDrawer();
+    closeFilters();
+  });
 }
 
 async function boot() {

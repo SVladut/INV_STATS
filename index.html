@@ -9,8 +9,6 @@
 </head>
 <body>
   <div class="app-bg" aria-hidden="true">
-    <span class="orb orb-one"></span>
-    <span class="orb orb-two"></span>
     <span class="grid-glow"></span>
   </div>
 
@@ -74,7 +72,7 @@
         <button class="nav-item" type="button" data-view="calendarView">Calendar</button>
         <button class="nav-item" type="button" data-view="statsView">Statistici</button>
         <button class="nav-item" type="button" data-view="historyView">Istoric</button>
-        <button class="nav-item" type="button" data-view="settingsView">Setări</button>
+        <button class="nav-item" type="button" data-view="profileView">Profil</button>
       </nav>
 
       <div class="user-box">
@@ -189,6 +187,7 @@
               <div>
                 <span class="page-kicker">Grafic</span>
                 <h2>Bani luați / lună</h2>
+                <p class="chart-reference">Referință: 6.000 lei</p>
               </div>
             </div>
             <div id="paidMoneyChart" class="bar-chart"></div>
@@ -208,7 +207,8 @@
             <div class="section-head">
               <div>
                 <span class="page-kicker">Grafic</span>
-                <h2>Zile lucrate / lună</h2>
+                <h2>Ore lucrate / lună</h2>
+                <p class="chart-reference">Referință: 160 ore</p>
               </div>
             </div>
             <div id="workedDaysChart" class="bar-chart"></div>
@@ -219,6 +219,7 @@
               <div>
                 <span class="page-kicker">Grafic</span>
                 <h2>Medie lei/oră / lună</h2>
+                <p class="chart-reference">Referință: 37,5 lei/h</p>
               </div>
             </div>
             <div id="hourlyChart" class="bar-chart"></div>
@@ -227,72 +228,63 @@
       </section>
 
       <section id="historyView" class="view">
-        <section class="panel glass sticky-filters">
-          <div class="filters-row">
-            <label>
-              Caută
-              <input id="searchInput" type="search" placeholder="denumire, dată, observații..." />
-            </label>
-            <label>
-              Status
-              <select id="statusFilter">
-                <option value="toate">Toate</option>
-                <option value="achitate">Achitate</option>
-                <option value="neachitate">Neachitate</option>
-                <option value="viitoare">Viitoare</option>
-              </select>
-            </label>
-            <label>
-              Tip
-              <select id="typeFilter">
-                <option value="toate">Toate</option>
-                <option value="sofer-da">Șofer: da</option>
-                <option value="sofer-nu">Șofer: nu</option>
-                <option value="deplasare-da">Deplasare: da</option>
-                <option value="deplasare-nu">Deplasare: nu</option>
-              </select>
-            </label>
-          </div>
-        </section>
-
         <section class="panel glass">
           <div class="section-head">
             <div>
               <span class="page-kicker">Toate datele</span>
               <h2>Istoric inventare</h2>
+              <p id="filterSummary" class="filter-summary">Toate inventarele</p>
             </div>
+            <button id="openFiltersBtn" class="btn btn-secondary filter-trigger" type="button">
+              Filtre
+              <span id="filterCountBadge" class="filter-count hidden">0</span>
+            </button>
           </div>
           <div id="historyList" class="inventory-list"></div>
         </section>
       </section>
 
-      <section id="settingsView" class="view">
-        <section class="panel glass settings-panel">
+      <section id="profileView" class="view">
+        <section class="panel glass profile-panel">
           <div class="section-head">
             <div>
-              <span class="page-kicker">Backup</span>
-              <h2>Export / Import JSON</h2>
+              <span class="page-kicker">Cont</span>
+              <h2>Profilul tău</h2>
+              <p class="profile-subtitle">Date salvate local pentru utilizatorul curent.</p>
             </div>
           </div>
-          <p class="soft-text">
-            Exportul îți descarcă toate datele grupate pe utilizatori. Importul înlocuiește datele aplicației cu fișierul ales.
-          </p>
-          <div class="settings-actions">
-            <button id="exportBtn" class="btn btn-secondary" type="button">Exportă JSON</button>
-            <label class="file-btn">
-              Importă JSON
-              <input id="importInput" type="file" accept="application/json,.json" />
+
+          <div class="profile-card">
+            <div>
+              <span class="muted-label">Conectat ca</span>
+              <strong id="profileCurrentUser">-</strong>
+            </div>
+            <button id="profileLogoutBtn" class="btn btn-secondary" type="button">Deconectare</button>
+          </div>
+
+          <form id="profileForm" class="profile-form" autocomplete="on">
+            <label>
+              Username
+              <input id="profileUsername" type="text" autocomplete="username" required />
             </label>
-            <button id="syncBtn" class="btn btn-primary" type="button">Sincronizează</button>
-          </div>
-          <div class="config-box">
-            <strong>Autopush GitHub</strong>
-            <p>
-              Dacă setezi <code>AUTOPUSH_URL</code> în <code>script.js</code>, salvările se trimit către Worker, iar Worker-ul modifică <code>data/inventare.json</code> în repository.
-            </p>
-          </div>
+            <label>
+              Parola actuală
+              <input id="profileCurrentPassword" type="password" autocomplete="current-password" required />
+            </label>
+            <label>
+              Parolă nouă
+              <input id="profileNewPassword" type="password" autocomplete="new-password" placeholder="lasă gol dacă nu o schimbi" />
+            </label>
+
+            <p id="profileMessage" class="form-message"></p>
+
+            <div class="profile-actions">
+              <button class="btn btn-primary" type="submit">Salvează profilul</button>
+            </div>
+          </form>
         </section>
       </section>
+
     </main>
   </div>
 
@@ -301,7 +293,53 @@
     <button class="mobile-nav-item" type="button" data-view="calendarView">Calendar</button>
     <button class="mobile-nav-item" type="button" data-view="statsView">Stats</button>
     <button class="mobile-nav-item" type="button" data-view="historyView">Istoric</button>
+    <button class="mobile-nav-item" type="button" data-view="profileView">Profil</button>
   </nav>
+
+  <div id="filtersDrawer" class="drawer-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="filtersTitle">
+    <section class="filter-sheet glass">
+      <div class="drawer-head">
+        <div>
+          <span class="page-kicker">Istoric</span>
+          <h2 id="filtersTitle">Filtre</h2>
+        </div>
+        <button id="closeFiltersBtn" class="icon-btn" type="button" aria-label="Închide">×</button>
+      </div>
+
+      <form id="filtersForm" class="filter-form">
+        <div class="filters-row">
+          <label>
+            Caută
+            <input id="searchInput" type="search" placeholder="denumire, dată, observații..." />
+          </label>
+          <label>
+            Status
+            <select id="statusFilter">
+              <option value="toate">Toate</option>
+              <option value="achitate">Achitate</option>
+              <option value="neachitate">Neachitate</option>
+              <option value="viitoare">Viitoare</option>
+            </select>
+          </label>
+          <label>
+            Tip
+            <select id="typeFilter">
+              <option value="toate">Toate</option>
+              <option value="sofer-da">Șofer: da</option>
+              <option value="sofer-nu">Șofer: nu</option>
+              <option value="deplasare-da">Deplasare: da</option>
+              <option value="deplasare-nu">Deplasare: nu</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="filter-actions">
+          <button id="resetFiltersBtn" class="btn btn-secondary" type="button">Resetează</button>
+          <button class="btn btn-primary" type="submit">Aplică</button>
+        </div>
+      </form>
+    </section>
+  </div>
 
   <div id="inventoryDrawer" class="drawer-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
     <section class="drawer glass">
