@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T00:56:59.254Z",
+  "updatedAt": "2026-07-06T00:57:28.616Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -70,6 +70,19 @@
           "observatii": "",
           "createdAt": "2026-07-06T00:56:58.566Z",
           "updatedAt": "2026-07-06T00:56:58.566Z"
+        },
+        {
+          "id": "847a4d16-ee2f-401d-8f76-0f00d9dab509",
+          "data": "2026-07-14",
+          "denumire": "Sinsay lazuri Satu Mare",
+          "suma": 300,
+          "orePlecatAcasa": 0,
+          "sofer": "nu",
+          "deplasare": "da",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T00:57:27.964Z",
+          "updatedAt": "2026-07-06T00:57:27.964Z"
         }
       ]
     }
