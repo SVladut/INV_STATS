@@ -9,13 +9,6 @@
     }
   },
   "authUsers": {
-    "cozonac": {
-      "username": "cozonac",
-      "salt": "7ec32465-102b-4fcf-974c-cd8171461b3e",
-      "passwordHash": "d8f3762f8574f6ac35de0acf7d21b330c79171565cbb6245abab3f90025235f6",
-      "createdAt": "2026-07-05T23:41:28.693Z",
-      "updatedAt": "2026-07-05T23:41:28.693Z"
-    },
     "vladut": {
       "username": "vladut",
       "salt": "790db5df-0115-4701-97f5-309c2cd42e79",
