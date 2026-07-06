@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T00:54:52.269Z",
+  "updatedAt": "2026-07-06T00:55:44.163Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -31,6 +31,19 @@
           "observatii": "Plecare la 14",
           "createdAt": "2026-07-06T00:54:51.579Z",
           "updatedAt": "2026-07-06T00:54:51.579Z"
+        },
+        {
+          "id": "cc9a35b1-671d-4f1d-a167-650973c3a087",
+          "data": "2026-07-07",
+          "denumire": "Sinsay Bistrița",
+          "suma": 300,
+          "orePlecatAcasa": 0,
+          "sofer": "nu",
+          "deplasare": "nu",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T00:55:43.507Z",
+          "updatedAt": "2026-07-06T00:55:43.507Z"
         }
       ]
     }
