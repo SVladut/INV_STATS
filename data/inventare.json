@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T10:43:34.264Z",
+  "updatedAt": "2026-07-06T10:44:08.324Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -206,10 +206,10 @@
     },
     "cozo": {
       "username": "cozo",
-      "salt": "a080fc79-9c1b-4145-8bd8-e7741e23fde9",
-      "passwordHash": "20165faea103f0429051790bd3f47a8266f28bebfdd821e229d07cdd5ffafbf8",
+      "salt": "f80f52a8-04e9-475d-8173-536c6999b387",
+      "passwordHash": "3d39affb0a0b09895e76711fcba86fc64f350c5a155cc0be0e7b2ecbdbe7df76",
       "createdAt": "2026-07-06T09:47:12.114Z",
-      "updatedAt": "2026-07-06T09:47:12.114Z"
+      "updatedAt": "2026-07-06T10:44:07.918Z"
     }
   }
 }
