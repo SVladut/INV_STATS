@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T01:01:13.427Z",
+  "updatedAt": "2026-07-06T01:01:31.638Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -148,6 +148,19 @@
           "observatii": "",
           "createdAt": "2026-07-06T01:01:12.885Z",
           "updatedAt": "2026-07-06T01:01:12.885Z"
+        },
+        {
+          "id": "4c3ba71d-1af4-4cf5-aa5e-d50917bc9335",
+          "data": "2026-07-28",
+          "denumire": "Mega Image Dezmir",
+          "suma": 400,
+          "orePlecatAcasa": 0,
+          "sofer": "nu",
+          "deplasare": "nu",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T01:01:31.130Z",
+          "updatedAt": "2026-07-06T01:01:31.130Z"
         }
       ]
     }
