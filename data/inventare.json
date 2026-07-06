@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T00:57:28.616Z",
+  "updatedAt": "2026-07-06T00:58:06.944Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -83,6 +83,19 @@
           "observatii": "",
           "createdAt": "2026-07-06T00:57:27.964Z",
           "updatedAt": "2026-07-06T00:57:27.964Z"
+        },
+        {
+          "id": "79ddc95b-a374-464b-a4cf-3068a179d5cd",
+          "data": "2026-07-15",
+          "denumire": "Sinsay Odoreu",
+          "suma": 300,
+          "orePlecatAcasa": 0,
+          "sofer": "nu",
+          "deplasare": "da",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T00:58:06.410Z",
+          "updatedAt": "2026-07-06T00:58:06.410Z"
         }
       ]
     }
