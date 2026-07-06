@@ -1,16 +1,6 @@
 {
   "version": 4,
   "updatedAt": "2026-07-06T00:00:00.000Z",
-  "users": {
-    "vladut": {
-      "username": "vladut",
-      "createdAt": "2026-07-06T00:00:00.000Z",
-      "inventare": []
-    },
-    "reci": {
-      "username": "reci",
-      "createdAt": "2026-07-06T00:00:00.000Z",
-      "inventare": []
-    }
-  }
+  "authUsers": {},
+  "users": {}
 }

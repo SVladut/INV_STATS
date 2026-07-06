@@ -1,12 +1,12 @@
 /*
   Pentru GitHub Pages:
-  - lasa AUTOPUSH_URL gol daca vrei doar salvare locala in browser + export/import JSON;
-  - seteaza AUTOPUSH_URL cu URL-ul Cloudflare Worker daca vrei autopush in data/inventare.json din GitHub.
+  - AUTOPUSH_URL este URL-ul Cloudflare Worker care citeste si actualizeaza data/inventare.json.
+  - datele se sincronizeaza automat la logare si la fiecare salvare.
 
   Nu pune niciodata token GitHub aici. Token-ul sta doar in Worker, ca secret.
 */
 const CONFIG = {
-  AUTOPUSH_URL: '',
+  AUTOPUSH_URL: 'https://steep-mountain-53d8.sarsamavladut.workers.dev',
   STORAGE_KEY: 'inventare-app-db-v4',
   AUTH_KEY: 'inventare-app-auth-v4',
   SESSION_KEY: 'inventare-app-session-v4'
@@ -15,7 +15,8 @@ const CONFIG = {
 const emptyDatabase = () => ({
   version: 4,
   updatedAt: new Date().toISOString(),
-  users: {}
+  users: {},
+  authUsers: {}
 });
 
 let database = emptyDatabase();
@@ -203,6 +204,51 @@ function saveAuthUsers(users) {
   localStorage.setItem(CONFIG.AUTH_KEY, JSON.stringify(users));
 }
 
+function normalizeAuthUsers(users) {
+  const normalized = {};
+  if (!users || typeof users !== 'object') return normalized;
+
+  Object.keys(users).forEach((username) => {
+    const user = users[username];
+    if (!user || typeof user !== 'object' || !user.salt || !user.passwordHash) return;
+    const normalizedUsername = normalizeUsername(user.username || username);
+    if (!normalizedUsername) return;
+    normalized[normalizedUsername] = {
+      username: normalizedUsername,
+      salt: String(user.salt),
+      passwordHash: String(user.passwordHash),
+      createdAt: user.createdAt || new Date().toISOString(),
+      updatedAt: user.updatedAt || user.createdAt || new Date().toISOString()
+    };
+  });
+
+  return normalized;
+}
+
+function mergeAuthUsers(baseUsers, incomingUsers) {
+  const merged = { ...normalizeAuthUsers(baseUsers) };
+  const incoming = normalizeAuthUsers(incomingUsers);
+
+  Object.keys(incoming).forEach((username) => {
+    const existing = merged[username];
+    if (!existing || new Date(incoming[username].updatedAt) >= new Date(existing.updatedAt || existing.createdAt || 0)) {
+      merged[username] = incoming[username];
+    }
+  });
+
+  return merged;
+}
+
+function hydrateAuthFromDatabase() {
+  const merged = mergeAuthUsers(getAuthUsers(), database.authUsers);
+  saveAuthUsers(merged);
+  database.authUsers = merged;
+}
+
+function syncAuthToDatabase() {
+  database.authUsers = mergeAuthUsers(database.authUsers, getAuthUsers());
+}
+
 function showAuthMessage(message, type = 'error') {
   els.authMessage.textContent = message;
   els.authMessage.style.color = type === 'error' ? '#fb7185' : '#2dd4bf';
@@ -238,6 +284,7 @@ function migrateDatabase(data) {
     return {
       version: 4,
       updatedAt: new Date().toISOString(),
+      authUsers: getAuthUsers(),
       users: {
         [username]: {
           username,
@@ -251,7 +298,8 @@ function migrateDatabase(data) {
   const migrated = {
     version: 4,
     updatedAt: data.updatedAt || new Date().toISOString(),
-    users: data.users || {}
+    users: data.users || {},
+    authUsers: normalizeAuthUsers(data.authUsers)
   };
 
   Object.keys(migrated.users).forEach((username) => {
@@ -275,20 +323,27 @@ function normalizeInventory(item) {
     deplasare: item.deplasare === 'da' || item.deplasare === true ? 'da' : 'nu',
     achitat: Boolean(item.achitat),
     observatii: item.observatii || item.notes || '',
+    deleted: Boolean(item.deleted),
     createdAt: item.createdAt || new Date().toISOString(),
     updatedAt: item.updatedAt || new Date().toISOString()
   };
 }
 
-function getCurrentInventories() {
+function getAllCurrentInventories() {
   if (!currentUser) return [];
   ensureUser(currentUser);
   return database.users[currentUser].inventare;
 }
 
+function getCurrentInventories() {
+  return getAllCurrentInventories().filter((item) => !item.deleted);
+}
+
 function setCurrentInventories(items) {
   ensureUser(currentUser);
-  database.users[currentUser].inventare = items.map(normalizeInventory);
+  const deletedItems = getAllCurrentInventories().filter((item) => item.deleted);
+  const activeItems = items.map(normalizeInventory).filter((item) => !item.deleted);
+  database.users[currentUser].inventare = [...activeItems, ...deletedItems];
   database.updatedAt = new Date().toISOString();
 }
 
@@ -325,11 +380,13 @@ async function loadDatabase() {
   }
 
   database = migrateDatabase(loaded);
-  ensureUser(currentUser);
+  hydrateAuthFromDatabase();
+  if (currentUser) ensureUser(currentUser);
   localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(database));
 }
 
 async function saveDatabase(message = 'Date salvate.') {
+  syncAuthToDatabase();
   database.updatedAt = new Date().toISOString();
   localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(database));
 
@@ -344,6 +401,13 @@ async function saveDatabase(message = 'Date salvate.') {
       if (!response.ok) {
         const text = await response.text();
         throw new Error(text || 'Autopush a eșuat.');
+      }
+      const result = await response.json();
+      if (result.database) {
+        database = migrateDatabase(result.database);
+        hydrateAuthFromDatabase();
+        if (currentUser) ensureUser(currentUser);
+        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(database));
       }
       showToast(`${message} Autopush făcut în GitHub.`);
     } catch (error) {
@@ -390,9 +454,13 @@ async function register(event) {
     return;
   }
 
+  if (CONFIG.AUTOPUSH_URL) {
+    await loadDatabase();
+  }
+
   const authUsers = getAuthUsers();
-  if (authUsers[username]) {
-    showAuthMessage('Există deja un cont local cu acest username.');
+  if (authUsers[username] || database.users?.[username]) {
+    showAuthMessage('Există deja un cont cu acest username.');
     return;
   }
 
@@ -401,7 +469,8 @@ async function register(event) {
     username,
     salt,
     passwordHash: await sha256(`${salt}:${password}`),
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   };
   saveAuthUsers(authUsers);
 
@@ -417,16 +486,29 @@ async function login(event) {
   event.preventDefault();
   const username = normalizeUsername(els.loginUsername.value);
   const password = els.loginPassword.value;
+
+  if (CONFIG.AUTOPUSH_URL) {
+    await loadDatabase();
+  }
+
   const authUsers = getAuthUsers();
   const user = authUsers[username];
+  const legacyUser = database.users?.[username];
+  let passwordOk = false;
 
-  if (!user) {
-    showAuthMessage('Nu există acest cont local. Creează-l din tabul „Cont nou”.');
+  if (user) {
+    const hash = await sha256(`${user.salt}:${password}`);
+    passwordOk = hash === user.passwordHash;
+  } else if (legacyUser?.password) {
+    passwordOk = String(legacyUser.password) === password;
+  }
+
+  if (!user && !legacyUser?.password) {
+    showAuthMessage('Nu există acest cont. Creează-l din tabul „Cont nou”.');
     return;
   }
 
-  const hash = await sha256(`${user.salt}:${password}`);
-  if (hash !== user.passwordHash) {
+  if (!passwordOk) {
     showAuthMessage('Parola nu este corectă.');
     return;
   }
@@ -565,13 +647,15 @@ async function saveInventory(event) {
 }
 
 async function deleteInventory(id) {
-  const items = getCurrentInventories();
+  const items = getAllCurrentInventories();
   const inventory = items.find((item) => item.id === id);
   if (!inventory) return;
 
   if (!confirm(`Ștergi inventarul „${inventory.denumire}”?`)) return;
 
-  setCurrentInventories(items.filter((item) => item.id !== id));
+  inventory.deleted = true;
+  inventory.updatedAt = new Date().toISOString();
+  database.updatedAt = new Date().toISOString();
   await saveDatabase('Inventar șters.');
   closeDrawer();
   renderAll();

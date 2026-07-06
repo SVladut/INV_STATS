@@ -830,10 +830,6 @@ code {
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.72);
 }
 
-.file-btn input {
-  display: none;
-}
-
 .profile-panel {
   max-width: 720px;
 }
@@ -992,7 +988,7 @@ code {
   .mobile-nav-item {
     min-height: 48px;
     border-radius: 10px;
-    font-size: 0.76rem;
+    font-size: 0.72rem;
   }
 
   .mobile-nav-item.active {
@@ -1267,6 +1263,7 @@ code {
   .profile-card .btn {
     width: 100%;
   }
+
 }
 
 @media (hover: none) {
