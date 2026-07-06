@@ -1,10 +1,3 @@
-/*
-  Pentru GitHub Pages:
-  - AUTOPUSH_URL este URL-ul Cloudflare Worker care citeste si actualizeaza data/inventare.json.
-  - datele se sincronizeaza automat la logare si la fiecare salvare.
-
-  Nu pune niciodata token GitHub aici. Token-ul sta doar in Worker, ca secret.
-*/
 const CONFIG = {
   AUTOPUSH_URL: 'https://steep-mountain-53d8.sarsamavladut.workers.dev',
   STORAGE_KEY: 'inventare-app-db-v4',
@@ -353,12 +346,12 @@ async function loadDatabase() {
   if (CONFIG.AUTOPUSH_URL) {
     try {
       const response = await fetch(`${CONFIG.AUTOPUSH_URL.replace(/\/$/, '')}/db`, { cache: 'no-store' });
-      if (!response.ok) throw new Error('Nu pot citi JSON-ul din GitHub.');
+      if (!response.ok) throw new Error('Nu pot citi datele.');
       loaded = await response.json();
       localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(loaded));
-      els.storageModeLabel.textContent = 'autopush';
+      els.storageModeLabel.textContent = 'activ';
     } catch (error) {
-      showToast(`Autopush indisponibil. Folosesc copia locală. ${error.message}`, 'error');
+      showToast('Nu am putut actualiza datele. Folosesc ultima copie disponibilă.', 'error');
     }
   }
 
@@ -385,7 +378,7 @@ async function loadDatabase() {
   localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(database));
 }
 
-async function saveDatabase(message = 'Date salvate.') {
+async function saveDatabase(message = 'Operațiune finalizată cu succes.') {
   syncAuthToDatabase();
   database.updatedAt = new Date().toISOString();
   localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(database));
@@ -400,7 +393,7 @@ async function saveDatabase(message = 'Date salvate.') {
       });
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(text || 'Autopush a eșuat.');
+        throw new Error(text || 'Sincronizarea a eșuat.');
       }
       const result = await response.json();
       if (result.database) {
@@ -409,9 +402,9 @@ async function saveDatabase(message = 'Date salvate.') {
         if (currentUser) ensureUser(currentUser);
         localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(database));
       }
-      showToast(`${message} Autopush făcut în GitHub.`);
+      showToast(message);
     } catch (error) {
-      showToast(`Salvat local, dar autopush a eșuat: ${error.message}`, 'error');
+      showToast('Datele au fost salvate. Sincronizarea nu este disponibilă momentan.', 'error');
     } finally {
       syncInProgress = false;
     }
@@ -422,7 +415,7 @@ async function saveDatabase(message = 'Date salvate.') {
 
 async function syncNow() {
   if (!CONFIG.AUTOPUSH_URL) {
-    showToast('Nu ai setat AUTOPUSH_URL în script.js.', 'error');
+    showToast('Sincronizarea nu este disponibilă momentan.', 'error');
     return;
   }
 
@@ -531,7 +524,7 @@ function logout() {
 function enterApp() {
   ensureUser(currentUser);
   els.currentUserLabel.textContent = currentUser;
-  els.storageModeLabel.textContent = CONFIG.AUTOPUSH_URL ? 'autopush' : 'local';
+  els.storageModeLabel.textContent = 'activ';
   els.loginScreen.classList.add('hidden');
   els.appShell.classList.remove('hidden');
   renderAll();
@@ -1014,12 +1007,12 @@ async function updateProfile(event) {
   }
 
   if (newUsername !== currentUser && authUsers[newUsername]) {
-    showProfileMessage('Există deja un cont local cu acest username.');
+    showProfileMessage('Există deja un cont cu acest username.');
     return;
   }
 
   if (newUsername !== currentUser && database.users?.[newUsername]) {
-    showProfileMessage('Există deja date locale pentru acest username. Alege alt username.');
+    showProfileMessage('Există deja date pentru acest username. Alege alt username.');
     return;
   }
 

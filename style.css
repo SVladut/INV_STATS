@@ -132,22 +132,16 @@ button {
   font-size: 3rem;
 }
 
-.login-copy,
-.soft-text,
-.login-note,
 .form-message {
   color: var(--muted);
   line-height: 1.65;
-}
-
-.login-copy {
-  margin: 16px 0 22px;
 }
 
 .auth-tabs {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 8px;
+  margin-top: 22px;
   padding: 7px;
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -231,16 +225,6 @@ textarea:focus {
   border-color: rgba(6, 182, 212, 0.7);
   background-color: rgba(15, 23, 42, 0.96);
   box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.12);
-}
-
-.login-note {
-  margin-top: 18px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  font-size: 0.88rem;
-  overflow-wrap: anywhere;
 }
 
 code {

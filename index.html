@@ -16,10 +16,6 @@
     <div class="login-card glass">
       <div class="brand-pill">Inventare private</div>
       <h1>Intră în contul tău</h1>
-      <p class="login-copy">
-        Datele sunt separate pe utilizator. După logare vezi doar inventarele contului curent.
-      </p>
-
       <div class="auth-tabs" role="tablist" aria-label="Autentificare">
         <button id="showLoginBtn" class="auth-tab active" type="button">Login</button>
         <button id="showRegisterBtn" class="auth-tab" type="button">Cont nou</button>
@@ -46,14 +42,10 @@
           Parolă
           <input id="registerPassword" type="password" placeholder="minimum 4 caractere" autocomplete="new-password" required />
         </label>
-        <button class="btn btn-primary wide" type="submit">Creează cont local</button>
+        <button class="btn btn-primary wide" type="submit">Creează cont</button>
       </form>
 
       <p id="authMessage" class="form-message" role="alert"></p>
-
-      <div class="login-note">
-        <strong>Important:</strong> username-ul și parola sunt salvate local în browser. Pentru autopush în GitHub, setezi URL-ul Worker-ului în <code>script.js</code>.
-      </div>
     </div>
   </section>
 
@@ -63,7 +55,7 @@
         <div class="logo-mark">I</div>
         <div>
           <strong>Inventare</strong>
-          <span id="storageModeLabel">local</span>
+          <span id="storageModeLabel">activ</span>
         </div>
       </div>
 
@@ -250,7 +242,7 @@
             <div>
               <span class="page-kicker">Cont</span>
               <h2>Profilul tău</h2>
-              <p class="profile-subtitle">Date salvate local pentru utilizatorul curent.</p>
+              <p class="profile-subtitle">Editează datele contului curent.</p>
             </div>
           </div>
 
