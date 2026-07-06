@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T00:58:41.157Z",
+  "updatedAt": "2026-07-06T01:00:05.532Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -109,6 +109,19 @@
           "observatii": "",
           "createdAt": "2026-07-06T00:58:40.462Z",
           "updatedAt": "2026-07-06T00:58:40.462Z"
+        },
+        {
+          "id": "aec26fe0-95b5-4f1e-b145-70287a5a2518",
+          "data": "2026-07-20",
+          "denumire": "SG Oasului",
+          "suma": 190,
+          "orePlecatAcasa": 0,
+          "sofer": "nu",
+          "deplasare": "nu",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T01:00:04.686Z",
+          "updatedAt": "2026-07-06T01:00:04.686Z"
         }
       ]
     }
