@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T01:00:45.182Z",
+  "updatedAt": "2026-07-06T01:01:13.427Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -135,6 +135,19 @@
           "observatii": "",
           "createdAt": "2026-07-06T01:00:33.864Z",
           "updatedAt": "2026-07-06T01:00:44.562Z"
+        },
+        {
+          "id": "2fc0e6ed-8a9c-45f0-85a6-9084acac9b61",
+          "data": "2026-07-26",
+          "denumire": "Mega Image Buna ziua",
+          "suma": 220,
+          "orePlecatAcasa": 0,
+          "sofer": "nu",
+          "deplasare": "nu",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T01:01:12.885Z",
+          "updatedAt": "2026-07-06T01:01:12.885Z"
         }
       ]
     }
