@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T00:24:21.492Z",
+  "updatedAt": "2026-07-06T00:25:33.925Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -8,7 +8,7 @@
       "inventare": [
         {
           "id": "0ea79696-7e44-418a-8781-1f946e29940b",
-          "data": "2026-07-06",
+          "data": "2026-07-03",
           "denumire": "SG Miko Imre",
           "suma": 350,
           "orePlecatAcasa": 8,
@@ -17,7 +17,7 @@
           "achitat": false,
           "observatii": "",
           "createdAt": "2026-07-06T00:24:21.159Z",
-          "updatedAt": "2026-07-06T00:24:21.159Z"
+          "updatedAt": "2026-07-06T00:25:33.194Z"
         }
       ]
     }
