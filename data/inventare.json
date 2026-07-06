@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T09:47:13.386Z",
+  "updatedAt": "2026-07-06T09:48:12.403Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -172,7 +172,21 @@
     "cozo": {
       "username": "cozo",
       "createdAt": "2026-07-06T09:47:12.647Z",
-      "inventare": []
+      "inventare": [
+        {
+          "id": "5fc8497d-8af4-4f28-9452-f136b6838e89",
+          "data": "2026-07-06",
+          "denumire": "Sinsay Sebes",
+          "suma": 250,
+          "orePlecatAcasa": 0,
+          "sofer": "da",
+          "deplasare": "da",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T09:48:11.924Z",
+          "updatedAt": "2026-07-06T09:48:11.924Z"
+        }
+      ]
     }
   },
   "authUsers": {
