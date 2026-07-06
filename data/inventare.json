@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T10:44:17.925Z",
+  "updatedAt": "2026-07-06T10:44:53.693Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -173,6 +173,19 @@
       "username": "cozo",
       "createdAt": "2026-07-06T09:47:12.647Z",
       "inventare": [
+        {
+          "id": "50c5f0b0-ba8b-4407-b64b-9fc6688efe1f",
+          "data": "2026-07-06",
+          "denumire": "Sinsay",
+          "suma": 9999998888898888,
+          "orePlecatAcasa": 0,
+          "sofer": "nu",
+          "deplasare": "nu",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T10:44:52.823Z",
+          "updatedAt": "2026-07-06T10:44:52.823Z"
+        },
         {
           "id": "5fc8497d-8af4-4f28-9452-f136b6838e89",
           "data": "2026-07-06",
