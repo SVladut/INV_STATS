@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T01:01:31.638Z",
+  "updatedAt": "2026-07-06T07:53:21.147Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -163,6 +163,11 @@
           "updatedAt": "2026-07-06T01:01:31.130Z"
         }
       ]
+    },
+    "dianahutanu11@gmail.com": {
+      "username": "dianahutanu11@gmail.com",
+      "createdAt": "2026-07-06T07:53:20.868Z",
+      "inventare": []
     }
   },
   "authUsers": {
@@ -172,6 +177,13 @@
       "passwordHash": "2e2f49913b35d8292f13f24ea8bf621617271932960f907cf7366667de3c3f52",
       "createdAt": "2026-07-06T00:19:11.407Z",
       "updatedAt": "2026-07-06T00:19:11.407Z"
+    },
+    "dianahutanu11@gmail.com": {
+      "username": "dianahutanu11@gmail.com",
+      "salt": "199f9285-21b4-43e2-a677-0cf5802609a9",
+      "passwordHash": "e5cfe9de6b33225ef0bc49e6f27bda7c32c36d281e115d16487e1eaacf343cb8",
+      "createdAt": "2026-07-06T07:53:20.580Z",
+      "updatedAt": "2026-07-06T07:53:20.580Z"
     }
   }
 }
