@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T00:29:16.939Z",
+  "updatedAt": "2026-07-06T00:29:19.527Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -14,10 +14,10 @@
           "orePlecatAcasa": 8,
           "sofer": "nu",
           "deplasare": "nu",
-          "achitat": false,
+          "achitat": true,
           "observatii": "",
           "createdAt": "2026-07-06T00:24:21.159Z",
-          "updatedAt": "2026-07-06T00:29:16.529Z"
+          "updatedAt": "2026-07-06T00:29:19.111Z"
         }
       ]
     }
