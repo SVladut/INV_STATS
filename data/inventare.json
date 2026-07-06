@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T00:58:06.944Z",
+  "updatedAt": "2026-07-06T00:58:41.157Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -96,6 +96,19 @@
           "observatii": "",
           "createdAt": "2026-07-06T00:58:06.410Z",
           "updatedAt": "2026-07-06T00:58:06.410Z"
+        },
+        {
+          "id": "26b59078-f7fc-49ba-bf78-b79c3febad8b",
+          "data": "2026-07-17",
+          "denumire": "Good2Go Zalau",
+          "suma": 150,
+          "orePlecatAcasa": 0,
+          "sofer": "nu",
+          "deplasare": "da",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T00:58:40.462Z",
+          "updatedAt": "2026-07-06T00:58:40.462Z"
         }
       ]
     }
