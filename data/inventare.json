@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T01:00:05.532Z",
+  "updatedAt": "2026-07-06T01:00:34.293Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -122,6 +122,19 @@
           "observatii": "",
           "createdAt": "2026-07-06T01:00:04.686Z",
           "updatedAt": "2026-07-06T01:00:04.686Z"
+        },
+        {
+          "id": "c1a995ed-f3fe-4c85-8837-e432703849d1",
+          "data": "2026-07-24",
+          "denumire": "Mega Image Bistriței",
+          "suma": 350,
+          "orePlecatAcasa": 0,
+          "sofer": "nu",
+          "deplasare": "nu",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T01:00:33.864Z",
+          "updatedAt": "2026-07-06T01:00:33.864Z"
         }
       ]
     }
