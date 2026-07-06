@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T00:55:44.163Z",
+  "updatedAt": "2026-07-06T00:56:16.148Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -44,6 +44,19 @@
           "observatii": "",
           "createdAt": "2026-07-06T00:55:43.507Z",
           "updatedAt": "2026-07-06T00:55:43.507Z"
+        },
+        {
+          "id": "a6134256-57de-4424-9734-a4ce3f005d99",
+          "data": "2026-07-09",
+          "denumire": "Sinsay Dej",
+          "suma": 300,
+          "orePlecatAcasa": 0,
+          "sofer": "da",
+          "deplasare": "da",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-06T00:56:15.433Z",
+          "updatedAt": "2026-07-06T00:56:15.433Z"
         }
       ]
     }
