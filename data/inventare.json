@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-06T10:45:14.949Z",
+  "updatedAt": "2026-07-07T00:12:20.720Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -24,13 +24,13 @@
           "data": "2026-07-06",
           "denumire": "Sinsay Sebes",
           "suma": 300,
-          "orePlecatAcasa": 0,
+          "orePlecatAcasa": 15,
           "sofer": "nu",
-          "deplasare": "nu",
+          "deplasare": "da",
           "achitat": false,
           "observatii": "Plecare la 14",
           "createdAt": "2026-07-06T00:54:51.579Z",
-          "updatedAt": "2026-07-06T00:54:51.579Z"
+          "updatedAt": "2026-07-07T00:12:20.226Z"
         },
         {
           "id": "cc9a35b1-671d-4f1d-a167-650973c3a087",
