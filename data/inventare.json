@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-07T00:12:35.471Z",
+  "updatedAt": "2026-07-07T00:13:04.840Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -31,6 +31,19 @@
           "observatii": "Plecare la 14",
           "createdAt": "2026-07-06T00:54:51.579Z",
           "updatedAt": "2026-07-07T00:12:20.226Z"
+        },
+        {
+          "id": "1d6dfaef-a467-408b-be96-94cee66029bc",
+          "data": "2026-07-07",
+          "denumire": "Mol Deva",
+          "suma": 300,
+          "orePlecatAcasa": 0,
+          "sofer": "nu",
+          "deplasare": "nu",
+          "achitat": false,
+          "observatii": "",
+          "createdAt": "2026-07-07T00:13:04.442Z",
+          "updatedAt": "2026-07-07T00:13:04.442Z"
         },
         {
           "id": "cc9a35b1-671d-4f1d-a167-650973c3a087",
