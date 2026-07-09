@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-08T17:36:19.678Z",
+  "updatedAt": "2026-07-09T20:11:07.550Z",
   "users": {
     "vladut": {
       "username": "vladut",
@@ -213,6 +213,11 @@
           "updatedAt": "2026-07-06T10:43:33.897Z"
         }
       ]
+    },
+    "cristina": {
+      "username": "cristina",
+      "createdAt": "2026-07-09T20:11:06.923Z",
+      "inventare": []
     }
   },
   "authUsers": {
@@ -236,6 +241,13 @@
       "passwordHash": "3d39affb0a0b09895e76711fcba86fc64f350c5a155cc0be0e7b2ecbdbe7df76",
       "createdAt": "2026-07-06T09:47:12.114Z",
       "updatedAt": "2026-07-06T10:45:14.515Z"
+    },
+    "cristina": {
+      "username": "cristina",
+      "salt": "a0084c7d-11e9-41df-8e2e-ed5dc65113b0",
+      "passwordHash": "43cfdc6eb9d833ccc01c45de83745819773dbaa0d7bfc58ea838be18c97eaf67",
+      "createdAt": "2026-07-09T20:10:59.538Z",
+      "updatedAt": "2026-07-09T20:10:59.538Z"
     }
   }
 }
